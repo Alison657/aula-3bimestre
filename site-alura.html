@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraConnect - Conectando o Futuro</title>
+    
+    <!-- Google Fonts: Poppins para títulos, Lato para corpo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* 1. VARIÁVEIS DE CSS E RESET */
+        :root {
+            --bg-color: #0d1117;
+            --primary-color: #00f2fe;
+            --secondary-color: #a259ff;
+            --text-color: #c9d1d9;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --font-size-base: 16px; /* Base para controle de acessibilidade */
+        }
+
+        /* Modo de Alto Contraste */
+        .high-contrast {
+            --bg-color: #000000;
+            --primary-color: #ffff00;
+            --secondary-color: #00ffff;
+            --text-color: #ffffff;
+            --card-bg: #000000;
+            --border-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: var(--font-size-base);
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        section {
+            padding: 6rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 2. ACESSIBILIDADE */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: var(--bg-color);
+            padding: 8px;
+            z-index: 1000;
+            transition: top 0.3s;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Foco visível para teclado, mas não para mouse */
+        :is(a, button):focus-visible {
+            outline: 3px solid var(--primary-color);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+        
+        .accessibility-controls {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+            box-shadow: -5px 0px 15px rgba(0,0,0,0.2);
+        }
+        .accessibility-controls button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s, transform 0.2s;
+        }
+        .accessibility-controls button:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+
+        /* 3. CABEÇALHO E NAVEGAÇÃO */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #fff;
+        }
+        .logo i { color: var(--primary-color); }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .main-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 5px;
+            transition: color 0.3s;
+        }
+        .main-nav a:hover {
+            color: var(--primary-color);
+        }
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease-in-out;
+        }
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* 4. SEÇÃO HERO */
+        #inicio {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background-image: linear-gradient(45deg, rgba(162, 89, 255, 0.1), rgba(0, 242, 254, 0.1)),
+                              radial-gradient(circle at top right, rgba(162, 89, 255, 0.2), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(0, 242, 254, 0.2), transparent 50%);
+            background-color: var(--bg-color);
+            padding-top: 80px; /* Para não ficar atrás do header */
+        }
+        
+        .hero-content {
+            max-width: 650px;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content h1 span {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: #000;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2), 0 6px 6px rgba(162, 89, 255, 0.2);
+        }
+
+        /* Imagem principal da seção Hero */
+        .hero-image {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40%;
+            max-width: 500px;
+            opacity: 0.85;
+        }
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 5. SEÇÃO DE RECURSOS */
+        #recursos {
+            background-color: var(--card-bg);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--bg-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 6. SEÇÃO DE DEPOIMENTOS */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .testimonial-author cite {
+            font-weight: bold;
+            color: #fff;
+            font-style: normal;
+        }
+
+        /* Imagem de destaque na seção de recursos */
+        .features-showcase {
+            text-align: center;
+            margin: 4rem 0;
+        }
+        .features-showcase img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 7. SEÇÃO CTA FINAL */
+        #cta {
+            background: var(--card-bg);
+            text-align: center;
+        }
+
+        #cta .container {
+            max-width: 800px;
+        }
+
+        #cta h2 {
+            font-size: 2.8rem;
+        }
+
+        #cta p {
+            margin: 1rem 0 2rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Imagem de fundo no CTA */
+        .cta-visual {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .cta-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 8. RODAPÉ */
+        .main-footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        .main-footer p {
+            font-size: 0.9rem;
+        }
+
+        /* 9. RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2rem; }
+
+            .hero-image {
+                display: none; /* Esconder a imagem principal em mobile para melhor performance */
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--bg-color);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: right 0.5s ease-in-out;
+            }
+            .main-nav.active {
+                right: 0;
+            }
+            .main-nav ul {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .menu-toggle {
+                display: block;
+                z-index: 1001; /* Para ficar acima do menu */
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+    <div class="accessibility-controls" role="toolbar" aria-label="Controles de Acessibilidade">
+        <button id="highContrastBtn" aria-label="Alternar alto contraste">
+            <i class="fas fa-adjust"></i>
+        </button>
+        <button id="increaseFontBtn" aria-label="Aumentar fonte">
+            <i class="fas fa-search-plus"></i>
+        </button>
+        <button id="decreaseFontBtn" aria-label="Diminuir fonte">
+            <i class="fas fa-search-minus"></i>
+        </button>
+    </div>
+
+    <header class="main-header" role="banner">
+        <div class="container">
+            <a href="#inicio" class="logo"><i class="fas fa-satellite-dish"></i> AuraConnect</a>
+            <button class="menu-toggle" aria-controls="main-nav-list" aria-expanded="false" aria-label="Abrir menu de navegação">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="main-nav" id="main-nav">
+                <ul id="main-nav-list" role="menubar">
+                    <li role="none"><a href="#inicio" role="menuitem">Início</a></li>
+                    <li role="none"><a href="#recursos" role="menuitem">Recursos</a></li>
+                    <li role="none"><a href="#depoimentos" role="menuitem">Depoimentos</a></li>
+                    <li role="none"><a href="#cta" role="menuitem">Comece Agora</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" role="main">
+
+        <section id="inicio">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>A tecnologia que <span>antecipa</span> suas necessidades.</h1>
+                    <p>AuraConnect é a plataforma de automação inteligente que integra todos os seus dispositivos e serviços, criando um ecossistema perfeitamente sincronizado para sua vida e seu trabalho.</p>
+                    <a href="#cta" class="cta-button">Descubra o Futuro <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <!-- Imagem principal da seção Hero -->
+            <div class="hero-image">
+                <img src="https://img.freepik.com/premium-photo/futuristic-technology-devices-smart-home-automation-internet-things-digital-interface-gadgets_57163-5553.jpg" alt="Visualização de uma casa inteligente com dispositivos futuristas e telas de controle digital conectados pela internet das coisas.">
+            </div>
+        </section>
+
+        <section id="recursos">
+            <div class="container">
+                <h2>Por que escolher AuraConnect?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-brain"></i>
+                        <h3>Inteligência Preditiva</h3>
+                        <p>Nossa IA aprende com seus hábitos para automatizar tarefas antes mesmo que você pense nelas. Mais eficiência, menos esforço.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Segurança de Ponta</h3>
+                        <p>Com criptografia quântica e monitoramento 24/7, seus dados e sua privacidade estão sempre protegidos no mais alto nível.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-infinity"></i>
+                        <h3>Integração Universal</h3>
+                        <p>Conecte-se a milhares de apps e dispositivos. De sua casa inteligente a ferramentas de produtividade, tudo funciona em harmonia.</p>
+                    </div>
+                </div>
+                
+                <!-- Imagem de destaque na seção de recursos -->
+                <div class="features-showcase">
+                    <img src="https://thumbs.dreamstime.com/z/futuristic-smart-home-technology-automation-concept-ai-generated-268427108.jpg" alt="Conceito de automação de casa inteligente futurista com controle de voz e dispositivos conectados.">
+                </div>
+            </div>
+        </section>
+
+        <section id="depoimentos">
+            <div class="container">
+                <h2>O que nossos clientes dizem</h2>
+                <div class="testimonials-grid">
+                    <article class="testimonial-card">
+                        <p>"AuraConnect transformou a gestão da minha empresa. O tempo que economizamos com automação de processos é inacreditável. É como ter um assistente genial trabalhando 24h por dia."</p>
+                        <footer class="testimonial-author">
+                            <img src="https://i.pravatar.cc/150?img=12" alt="Foto de perfil de Liana Costa.">
+                            <cite>Liana Costa, CEO da InovaTech</cite>
+                        </footer>
+                    </article>
+                    <article class="testimonial-card">
+                        <p>"Eu era cético no início, mas a forma como o AuraConnect integrou todos os gadgets da minha casa é mágica. As rotinas são perfeitas e a segurança me dá total tranquilidade."</p>
+                        <footer class="testimonial-author">
+                            <img src="https://i.pravatar.cc/150?img=33" alt="Foto de perfil de Marcos Guedes.">
+                            <cite>Marcos Guedes, Entusiasta de Tecnologia</cite>
+                        </footer>
+                    </article>
+                </div>
+                
+                <!-- Imagem adicional na seção de depoimentos -->
+                <div class="features-showcase" style="margin-top: 3rem;">
+                    <img src="https://img.freepik.com/premium-photo/futuristic-gadgets-showcase-lineup-sleek-modern-technological-devices_977107-682.jpg" alt="Showcase de gadgets futuristas e elegantes, alinhados para demonstração de tecnologia de ponta.">
+                </div>
+            </div>
+        </section>
+
+        <section id="cta">
+            <div class="container">
+                <h2>Pronto para conectar seu mundo?</h2>
+                <p>Junte-se a milhares de usuários que já estão vivendo no futuro. Experimente o AuraConnect gratuitamente por 30 dias e sinta o poder da automação inteligente.</p>
+                <a href="#" class="cta-button">Iniciar Teste Gratuito <i class="fas fa-rocket"></i></a>
+            </div>
+            
+            <!-- Imagem de fundo no CTA -->
+            <div class="cta-visual">
+                <img src="https://thumbs.dreamstime.com/z/futuristic-cityscape-interconnected-smart-devices-autonomous-vehicles-generative-ai-280193188.jpg" alt="Cenário futurista de cidade com dispositivos inteligentes conectados e veículos autônomos.">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; 2025 AuraConnect. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- CONTROLES DE ACESSIBILIDADE ---
+            const body = document.body;
+            const html = document.documentElement;
+            const highContrastBtn = document.getElementById('highContrastBtn');
+            const increaseFontBtn = document.getElementById('increaseFontBtn');
+            const decreaseFontBtn = document.getElementById('decreaseFontBtn');
+            const FONT_STEP = 2; // Aumentar/diminuir em 2px
+            const MAX_FONT_SIZE = 24;
+            const MIN_FONT_SIZE = 12;
+
+            // Alto Contraste
+            highContrastBtn.addEventListener('click', () => {
+                body.classList.toggle('high-contrast');
+            });
+
+            // Tamanho da Fonte
+            function changeFontSize(direction) {
+                let currentSize = parseFloat(getComputedStyle(html).fontSize);
+                if (direction === 'increase' && currentSize < MAX_FONT_SIZE) {
+                    html.style.fontSize = `${currentSize + FONT_STEP}px`;
+                } else if (direction === 'decrease' && currentSize > MIN_FONT_SIZE) {
+                    html.style.fontSize = `${currentSize - FONT_STEP}px`;
+                }
+            }
+            increaseFontBtn.addEventListener('click', () => changeFontSize('increase'));
+            decreaseFontBtn.addEventListener('click', () => changeFontSize('decrease'));
+
+            // --- MENU MOBILE ---
+            const menuToggle = document.querySelector('.menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            const navLinks = document.querySelectorAll('.main-nav a');
+
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = mainNav.classList.toggle('active');
+                menuToggle.setAttribute('aria-expanded', isExpanded);
+                // Alterna o ícone
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times');
+            });
+            
+            // Fecha o menu ao clicar em um link
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                    }
+                });
+            });
+
+
+            // --- ANIMAÇÃO DE SCROLL ---
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1 // A animação começa quando 10% da seção está visível
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
